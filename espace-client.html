@@ -11,39 +11,58 @@
   <h1>Espace client</h1>
   <div id="requests">Chargement des demandes...</div>
   <div id="debug" style="margin-top:20px;color:red;font-size:14px;"></div>
-  <script src="script.js"></script>
+
   <script>
+    const SUPABASE_URL = 'https://eruhrhdnqncvvrakhhfn.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_1DWQrPq_JdFqO8KXdM4NOw_2c1Y2UZ4';
+
     const debug = document.getElementById('debug');
     function log(msg) {
       debug.innerHTML += '<p>' + msg + '</p>';
-      console.log(msg);
+    }
+
+    let supabase;
+    if (window.supabase) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      log('Supabase initialisé');
+    } else {
+      log('Erreur: Supabase CDN non chargé');
     }
 
     async function load() {
-      log('Démarrage...');
-      log('window.supabase existe ? ' + (typeof window.supabase !== 'undefined'));
-      
-      await new Promise(r => setTimeout(r, 800));
-      
-      log('Appel getRequests...');
+      log('Chargement...');
+      if (!supabase) {
+        log('Supabase non disponible');
+        return;
+      }
+
       try {
-        const requests = await getRequests();
-        log('Résultat reçu: ' + (requests ? requests.length : 'null') + ' demandes');
-        
+        const { data, error } = await supabase
+          .from('tinosbet_requests')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          log('Erreur Supabase: ' + error.message);
+          document.getElementById('requests').innerHTML = '<p style="color:red">Erreur: ' + error.message + '</p>';
+          return;
+        }
+
+        log('Données reçues: ' + (data ? data.length : 0));
         const div = document.getElementById('requests');
-        if (!requests || requests.length === 0) {
+        if (!data || data.length === 0) {
           div.innerHTML = '<p>Aucune demande pour le moment.</p>';
         } else {
-          div.innerHTML = requests.map(r => 
+          div.innerHTML = data.map(r => 
             `<p><strong>${r.request_code || ''}</strong> - ${r.customer_name || ''} - ${r.phone || ''} - ${r.status || ''}</p>`
           ).join('');
         }
       } catch (err) {
         log('ERREUR: ' + err.message);
-        document.getElementById('requests').innerHTML = '<p style="color:red">Erreur: ' + err.message + '</p>';
       }
     }
-    load();
+
+    setTimeout(load, 500);
   </script>
 </body>
 </html>
