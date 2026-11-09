@@ -10,18 +10,37 @@
 <body>
   <h1>Espace client</h1>
   <div id="requests">Chargement des demandes...</div>
+  <div id="debug" style="margin-top:20px;color:red;font-size:14px;"></div>
   <script src="script.js"></script>
   <script>
+    const debug = document.getElementById('debug');
+    function log(msg) {
+      debug.innerHTML += '<p>' + msg + '</p>';
+      console.log(msg);
+    }
+
     async function load() {
-      await new Promise(r => setTimeout(r, 500));
-      const requests = await getRequests();
-      const div = document.getElementById('requests');
-      if (!requests || requests.length === 0) {
-        div.innerHTML = '<p>Aucune demande pour le moment.</p>';
-      } else {
-        div.innerHTML = requests.map(r => 
-          `<p><strong>${r.request_code || ''}</strong> - ${r.customer_name || ''} - ${r.phone || ''} - ${r.status || ''}</p>`
-        ).join('');
+      log('Démarrage...');
+      log('window.supabase existe ? ' + (typeof window.supabase !== 'undefined'));
+      
+      await new Promise(r => setTimeout(r, 800));
+      
+      log('Appel getRequests...');
+      try {
+        const requests = await getRequests();
+        log('Résultat reçu: ' + (requests ? requests.length : 'null') + ' demandes');
+        
+        const div = document.getElementById('requests');
+        if (!requests || requests.length === 0) {
+          div.innerHTML = '<p>Aucune demande pour le moment.</p>';
+        } else {
+          div.innerHTML = requests.map(r => 
+            `<p><strong>${r.request_code || ''}</strong> - ${r.customer_name || ''} - ${r.phone || ''} - ${r.status || ''}</p>`
+          ).join('');
+        }
+      } catch (err) {
+        log('ERREUR: ' + err.message);
+        document.getElementById('requests').innerHTML = '<p style="color:red">Erreur: ' + err.message + '</p>';
       }
     }
     load();
