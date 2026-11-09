@@ -1,3 +1,5 @@
+
+}
 const SUPABASE_URL = 'https://eruhrhdnqncvvrakhhfn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1DWQrPq_JdFqO8KXdM4NOw_2c1Y2UZ4';
 
@@ -42,3 +44,7 @@ async function saveRequest(request) {
   }
   return data;
 }
+
+// Expose functions globally
+window.getRequests = getRequests;
+window.saveRequest = saveRequest;
