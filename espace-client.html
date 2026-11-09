@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Espace client - TINOSBET</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h1>Espace client</h1>
+  <div id="requests">Chargement des demandes...</div>
+  <script src="script.js"></script>
+  <script>
+    async function load() {
+      const requests = await getRequests();
+      const div = document.getElementById('requests');
+      if (requests.length === 0) {
+        div.innerHTML = '<p>Aucune demande pour le moment.</p>';
+      } else {
+        div.innerHTML = requests.map(r => `<p>${r.request_code} - ${r.customer_name} - ${r.phone} - ${r.status}</p>`).join('');
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
