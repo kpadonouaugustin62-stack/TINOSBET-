@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Espace client - TINOSBET</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,12 +13,15 @@
   <script src="script.js"></script>
   <script>
     async function load() {
+      await new Promise(r => setTimeout(r, 500));
       const requests = await getRequests();
       const div = document.getElementById('requests');
-      if (requests.length === 0) {
+      if (!requests || requests.length === 0) {
         div.innerHTML = '<p>Aucune demande pour le moment.</p>';
       } else {
-        div.innerHTML = requests.map(r => `<p>${r.request_code} - ${r.customer_name} - ${r.phone} - ${r.status}</p>`).join('');
+        div.innerHTML = requests.map(r => 
+          `<p><strong>${r.request_code || ''}</strong> - ${r.customer_name || ''} - ${r.phone || ''} - ${r.status || ''}</p>`
+        ).join('');
       }
     }
     load();
