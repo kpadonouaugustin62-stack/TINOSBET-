@@ -1,68 +1,13 @@
+
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Espace client - TINOSBET</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Test Espace client</title>
 </head>
 <body>
   <h1>Espace client</h1>
-  <div id="requests">Chargement des demandes...</div>
-  <div id="debug" style="margin-top:20px;color:red;font-size:14px;"></div>
-
-  <script>
-    const SUPABASE_URL = 'https://eruhrhdnqncvvrakhhfn.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_1DWQrPq_JdFqO8KXdM4NOw_2c1Y2UZ4';
-
-    const debug = document.getElementById('debug');
-    function log(msg) {
-      debug.innerHTML += '<p>' + msg + '</p>';
-    }
-
-    let supabase;
-    if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      log('Supabase initialisé');
-    } else {
-      log('Erreur: Supabase CDN non chargé');
-    }
-
-    async function load() {
-      log('Chargement...');
-      if (!supabase) {
-        log('Supabase non disponible');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('tinosbet_requests')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          log('Erreur Supabase: ' + error.message);
-          document.getElementById('requests').innerHTML = '<p style="color:red">Erreur: ' + error.message + '</p>';
-          return;
-        }
-
-        log('Données reçues: ' + (data ? data.length : 0));
-        const div = document.getElementById('requests');
-        if (!data || data.length === 0) {
-          div.innerHTML = '<p>Aucune demande pour le moment.</p>';
-        } else {
-          div.innerHTML = data.map(r => 
-            `<p><strong>${r.request_code || ''}</strong> - ${r.customer_name || ''} - ${r.phone || ''} - ${r.status || ''}</p>`
-          ).join('');
-        }
-      } catch (err) {
-        log('ERREUR: ' + err.message);
-      }
-    }
-
-    setTimeout(load, 500);
-  </script>
+  <p style="color:green; font-size:20px;">TEST RÉUSSI - La page se met à jour !</p>
+  <p>Si tu vois ce message en vert, le fichier est bien à jour.</p>
 </body>
 </html>
